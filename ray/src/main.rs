@@ -1,4 +1,4 @@
-use ray::vec3;
+use ray::Vec3;
 
 const IMAGE_WIDTH: u16 = 256;
 const IMAGE_HEIGHT: u16 = 256;
