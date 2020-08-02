@@ -1,4 +1,3 @@
-use ray::Color;
 use ray::Point3;
 use ray::Vec3;
 
@@ -33,6 +32,6 @@ impl Ray {
     }
 
     pub fn at(&self, t: f32) -> Point3 {
-        &self.orig + &(t * &self.dir)
+        self.orig + t * self.dir
     }
 }
