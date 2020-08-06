@@ -1,12 +1,21 @@
+use crate::rtweekend::*;
 use ray::Color;
 
-pub fn write_color(pixel_color: Color) -> String {
+pub fn write_color(pixel_color: Color, samples_per_pixel: u16) -> String {
+    let mut r = pixel_color.x();
+    let mut g = pixel_color.y();
+    let mut b = pixel_color.z();
+
+    let scale = 1.0 / samples_per_pixel as f32;
+    r *= scale;
+    g *= scale;
+    b *= scale;
     unsafe {
         format!(
             "{} {} {}\n",
-            (255.999 * pixel_color.x()).to_int_unchecked::<u16>(),
-            (255.999 * pixel_color.y()).to_int_unchecked::<u16>(),
-            (255.999 * pixel_color.z()).to_int_unchecked::<u16>()
+            (256.0 * clamp(r, 0.0, 0.999)).to_int_unchecked::<u16>(),
+            (256.0 * clamp(g, 0.0, 0.999)).to_int_unchecked::<u16>(),
+            (256.0 * clamp(b, 0.0, 0.999)).to_int_unchecked::<u16>(),
         )
     }
 }

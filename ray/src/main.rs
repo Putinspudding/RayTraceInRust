@@ -1,19 +1,22 @@
+mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
 mod rayh;
 mod rtweekend;
 mod sphere;
-pub use color::*;
-pub use hittable::*;
-pub use hittable_list::*;
-pub use ray::*;
-pub use rayh::*;
+use camera::*;
+use color::*;
+use hittable::*;
+use hittable_list::*;
+use ray::*;
+use rayh::*;
 use rtweekend::*;
-pub use sphere::*;
+use sphere::*;
 
 const IMAGE_WIDTH: u16 = 400;
 const ASPECT_RATIO: f32 = 16.0 / 9.0;
+const SAMPLES_PER_PIXEL: u16 = 100;
 
 fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
     let mut rec = Hit_record {
@@ -44,27 +47,20 @@ fn main() {
         radius: 100.0,
     });
 
-    println! {"P3\n{} {}\n255",IMAGE_WIDTH,IMAGE_HEIGHT};
-    let viewport_height = 2.0;
-    let viewport_width: f32 = ASPECT_RATIO * viewport_height;
-    let focal_length = 1.0;
+    let cam = Camera::new();
 
-    let origin: Point3 = Vec3(0.0, 0.0, 0.0);
-    let horizontal = Vec3(viewport_width, 0.0, 0.0);
-    let vertical = Vec3(0.0, viewport_height, 0.0);
-    let lower_left_corner =
-        origin - horizontal / 2 as f32 - vertical / 2 as f32 - Vec3(0.0, 0.0, focal_length);
+    println! {"P3\n{} {}\n255",IMAGE_WIDTH,IMAGE_HEIGHT};
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("\rScanlines remaining:{}", j);
         for i in 0..IMAGE_WIDTH {
-            let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
-            let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
-            let r = Ray {
-                orig: origin,
-                dir: lower_left_corner + u * horizontal + v * vertical - origin,
-            };
-            let pixel_color = ray_color(&r, &world);
-            print!("{}", write_color(pixel_color));
+            let mut pixel_color = Vec3(0.0, 0.0, 0.0);
+            for s in 0..SAMPLES_PER_PIXEL {
+                let u = (i as f32 + random_double(None, None)) / (IMAGE_WIDTH - 1) as f32;
+                let v = (j as f32 + random_double(None, None)) / (IMAGE_HEIGHT - 1) as f32;
+                let r = cam.get_ray(u, v);
+                pixel_color += ray_color(&r, &world);
+            }
+            print!("{}", write_color(pixel_color, SAMPLES_PER_PIXEL));
         }
     }
     eprintln!("\nDone");
