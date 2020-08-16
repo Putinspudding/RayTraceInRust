@@ -1,3 +1,5 @@
+mod rtweekend;
+use rtweekend::*;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -27,6 +29,13 @@ impl Vec3 {
     }
     pub fn length(&self) -> f32 {
         self.length_squared().sqrt()
+    }
+    pub fn random(min: Option<f32>, max: Option<f32>) -> Vec3 {
+        Vec3(
+            random_double(min, max),
+            random_double(min, max),
+            random_double(min, max),
+        )
     }
 }
 
@@ -117,6 +126,16 @@ pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
 
 pub fn unit_vector(u: Vec3) -> Vec3 {
     u / u.length()
+}
+
+pub fn random_in_unit_sphere() -> Vec3 {
+    loop {
+        let p = Vec3::random(Some(-1.0), Some(1.0));
+        if p.length_squared() >= 1.0 {
+            continue;
+        }
+        return p;
+    }
 }
 
 pub type Point3 = Vec3;

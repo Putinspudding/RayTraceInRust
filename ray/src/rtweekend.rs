@@ -8,7 +8,7 @@ pub fn degrees_to_radians(degrees: f32) -> f32 {
 
 pub fn random_double(min: Option<f32>, max: Option<f32>) -> f32 {
     let mut rng = thread_rng();
-    let n: f32 = rng.gen_range(min.unwrap_or(0.0), min.unwrap_or(1.0));
+    let n: f32 = rng.gen_range(min.unwrap_or(0.0), max.unwrap_or(1.0));
     n
 }
 
