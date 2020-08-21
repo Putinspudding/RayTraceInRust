@@ -138,5 +138,22 @@ pub fn random_in_unit_sphere() -> Vec3 {
     }
 }
 
+pub fn random_unit_vector() -> Vec3 {
+    let a = random_double(Some(0.0), Some(2.0 * PI));
+    let z = random_double(Some(-1.0), Some(1.0));
+    let r = (1.0 - z * z).sqrt();
+    Vec3(r * a.cos(), r * a.sin(), z)
+}
+
+pub fn random_in_hemisphere(normal: Vec3) -> Vec3 {
+    let in_unit_sphere = random_in_unit_sphere();
+    if dot(in_unit_sphere, normal) > 0.0 {
+        //和法线在同一半球
+        return in_unit_sphere;
+    } else {
+        return -in_unit_sphere;
+    }
+}
+
 pub type Point3 = Vec3;
 pub type Color = Vec3;

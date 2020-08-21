@@ -29,8 +29,8 @@ fn ray_color<T: Hittable>(r: &Ray, world: &T, depth: u16) -> Color {
     if depth <= 0 {
         return Vec3(0.0, 0.0, 0.0);
     }
-    if world.hit(r, 0.0, infinity, &mut rec) {
-        let target = rec.p + rec.normal + random_in_unit_sphere();
+    if world.hit(r, 0.001, infinity, &mut rec) {
+        let target = rec.p + random_in_hemisphere(rec.normal);
         return 0.5
             * ray_color(
                 &Ray {
